@@ -75,102 +75,15 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>Group 2: c(“gyros_belt_x”,“gyros_belt_y”,“gyros_belt_z”,“gyros_arm_x”,“gyros_arm_y”, “gyros_arm_z”,“gyros_dumbbell_x”,“gyros_dumbbell_y”,“gyros_dumbbell_z”, “gyros_forearm_x”,“gyros_forearm_y”,“gyros_forearm_z”, “classe”)</p>
 <p>Group 3: c(“magnet_belt_x”,“magnet_belt_y”,“magnet_belt_z”,“magnet_arm_x”,“magnet_arm_y”, “magnet_arm_z”,“magnet_dumbbell_x”,“magnet_dumbbell_y”,“magnet_dumbbell_z”, “magnet_forearm_x”,“magnet_forearm_y”,“magnet_forearm_z”, “classe”)</p>
 <p>Then training data (75% of pml-training.csv file) with selected features are feeded to Random Forest model and fitted model is validated by rest 25% from training data file.</p>
-<p>Result of acceleration features</p>
-<pre><code>## Confusion Matrix and Statistics
-## 
-##           Reference
-## Prediction    A    B    C    D    E
-##          A 1326   34    9   25    1
-##          B    9  869   23    4    9
-##          C   25   35  816   32    8
-##          D   34    6    7  740   12
-##          E    1    5    0    3  871
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.9425          
-##                  95% CI : (0.9356, 0.9488)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.9273          
-##  Mcnemar's Test P-Value : 1.399e-08       
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9505   0.9157   0.9544   0.9204   0.9667
-## Specificity            0.9803   0.9886   0.9753   0.9856   0.9978
-## Pos Pred Value         0.9505   0.9508   0.8908   0.9262   0.9898
-## Neg Pred Value         0.9803   0.9799   0.9902   0.9844   0.9925
-## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2704   0.1772   0.1664   0.1509   0.1776
-## Detection Prevalence   0.2845   0.1864   0.1868   0.1629   0.1794
-## Balanced Accuracy      0.9654   0.9522   0.9648   0.9530   0.9822</code></pre>
-<p>Result of gyroscope features</p>
-<pre><code>## Confusion Matrix and Statistics
-## 
-##           Reference
-## Prediction    A    B    C    D    E
-##          A 1316   43   55   51   31
-##          B   15  835   18    8   24
-##          C   33   40  757   67   18
-##          D   28   22   24  667   14
-##          E    3    9    1   11  814
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.895           
-##                  95% CI : (0.8861, 0.9034)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.8668          
-##  Mcnemar's Test P-Value : &lt; 2.2e-16       
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9434   0.8799   0.8854   0.8296   0.9034
-## Specificity            0.9487   0.9836   0.9610   0.9785   0.9940
-## Pos Pred Value         0.8797   0.9278   0.8273   0.8834   0.9714
-## Neg Pred Value         0.9768   0.9715   0.9754   0.9670   0.9786
-## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2684   0.1703   0.1544   0.1360   0.1660
-## Detection Prevalence   0.3051   0.1835   0.1866   0.1540   0.1709
-## Balanced Accuracy      0.9460   0.9317   0.9232   0.9041   0.9487</code></pre>
-<p>Result of magnetometer features</p>
-<pre><code>## Confusion Matrix and Statistics
-## 
-##           Reference
-## Prediction    A    B    C    D    E
-##          A 1378   35    4    4    2
-##          B    3  881   15    2    7
-##          C    7   20  829   29    2
-##          D    7   11    6  766   11
-##          E    0    2    1    3  879
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.9651          
-##                  95% CI : (0.9596, 0.9701)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.9559          
-##  Mcnemar's Test P-Value : 3.145e-09       
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9878   0.9283   0.9696   0.9527   0.9756
-## Specificity            0.9872   0.9932   0.9857   0.9915   0.9985
-## Pos Pred Value         0.9684   0.9703   0.9346   0.9563   0.9932
-## Neg Pred Value         0.9951   0.9830   0.9935   0.9907   0.9945
-## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2810   0.1796   0.1690   0.1562   0.1792
-## Detection Prevalence   0.2902   0.1852   0.1809   0.1633   0.1805
-## Balanced Accuracy      0.9875   0.9608   0.9776   0.9721   0.9870</code></pre>
+<p>Accuracy of acceleration features</p>
+<pre><code>##  Accuracy 
+## 0.9424959</code></pre>
+<p>Accuracy of gyroscope features</p>
+<pre><code>##  Accuracy 
+## 0.8949837</code></pre>
+<p>Accuracy of magnetometer features</p>
+<pre><code>##  Accuracy 
+## 0.9651305</code></pre>
 <p>We can see they are all below benchmark accuracy. It tell us that a single type of sensor could not provide enough information to classify target as accurate as we expected. Then what if we put sensor data together?</p>
 <p>Result of all sensor features</p>
 <pre><code>## Confusion Matrix and Statistics
@@ -212,69 +125,11 @@ if (window.hljs && document.readyState && document.readyState === "complete") {
 <p>Section 1 “Data Exploratory Analysis” shows more likely non-linear relationship between feature variables and output variable; Section 2 “Feature selection” determines 36 basic sensor features could generate very good results. So my candidate models are Random Forest, Tree Bag and latent Dirichlet allocation (LDA). Random Forest has been fitted in section 2. Its output will be used directly in this section for comparison.</p>
 <p>Training and cross validation: original training data set “pml-training.csv” is split into 75% for training and rest 25% for validation.</p>
 <p>Tree Bag output:</p>
-<pre><code>## Confusion Matrix and Statistics
-## 
-##           Reference
-## Prediction    A    B    C    D    E
-##          A 1380   18    1    3    0
-##          B    4  920   15    0    8
-##          C    4    9  832   21    2
-##          D    7    1    6  778    8
-##          E    0    1    1    2  883
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.9774          
-##                  95% CI : (0.9728, 0.9813)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.9714          
-##  Mcnemar's Test P-Value : NA              
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.9892   0.9694   0.9731   0.9677   0.9800
-## Specificity            0.9937   0.9932   0.9911   0.9946   0.9990
-## Pos Pred Value         0.9843   0.9715   0.9585   0.9725   0.9955
-## Neg Pred Value         0.9957   0.9927   0.9943   0.9937   0.9955
-## Prevalence             0.2845   0.1935   0.1743   0.1639   0.1837
-## Detection Rate         0.2814   0.1876   0.1697   0.1586   0.1801
-## Detection Prevalence   0.2859   0.1931   0.1770   0.1631   0.1809
-## Balanced Accuracy      0.9915   0.9813   0.9821   0.9811   0.9895</code></pre>
+<pre><code>##  Accuracy 
+## 0.9773654</code></pre>
 <p>LDA output:</p>
-<pre><code>## Confusion Matrix and Statistics
-## 
-##           Reference
-## Prediction    A    B    C    D    E
-##          A 1047  175  132   55   53
-##          B   57  576   72   73  180
-##          C  144  101  543  119   94
-##          D  136   45   90  477  123
-##          E   11   52   18   80  451
-## 
-## Overall Statistics
-##                                           
-##                Accuracy : 0.6309          
-##                  95% CI : (0.6172, 0.6444)
-##     No Information Rate : 0.2845          
-##     P-Value [Acc &gt; NIR] : &lt; 2.2e-16       
-##                                           
-##                   Kappa : 0.5327          
-##  Mcnemar's Test P-Value : &lt; 2.2e-16       
-## 
-## Statistics by Class:
-## 
-##                      Class: A Class: B Class: C Class: D Class: E
-## Sensitivity            0.7505   0.6070   0.6351  0.59328  0.50055
-## Specificity            0.8817   0.9034   0.8869  0.90390  0.95978
-## Pos Pred Value         0.7161   0.6013   0.5425  0.54765  0.73693
-## Neg Pred Value         0.8989   0.9055   0.9201  0.91892  0.89515
-## Prevalence             0.2845   0.1935   0.1743  0.16395  0.18373
-## Detection Rate         0.2135   0.1175   0.1107  0.09727  0.09197
-## Detection Prevalence   0.2981   0.1954   0.2041  0.17761  0.12480
-## Balanced Accuracy      0.8161   0.7552   0.7610  0.74859  0.73017</code></pre>
+<pre><code>##  Accuracy 
+## 0.6309135</code></pre>
 </div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
