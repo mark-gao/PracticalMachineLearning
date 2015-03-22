@@ -1,0 +1,146 @@
+---
+title: "Practical Machine Learning Course Project"
+author: "Mark Gao"
+date: "Monday, March 16, 2015"
+---
+
+## Executive Summary
+
+This project is to use sensor data collected from  belt, forearm, arm, and dumbell of 6 participants to detect correct and incorrect (in 5 different ways) barbell lift activities (see Reference). First, data exploratory analysis is conducted to get some idea of what the data looks like; then feature selection is described. After input variables are determined, several predictive models are compared and the best model is selected. Finally the selected model is trained, cross validated and expected error is estimated. Using reference provided precision rate 98.2% as benchmark, this report describes an approach which has higher accuracy.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(caret)
+library(rattle)
+trnData <- read.csv("pml-training.csv")
+tstData <- read.csv("pml-testing.csv")
+
+set.seed(125)
+
+inTrain = createDataPartition(trnData$classe, p = 3/4)[[1]]
+trn = trnData[ inTrain,]
+val = trnData[-inTrain,]
+
+pml_write_files = function(x, model){
+  n = length(x)
+  for(i in 1:n){
+    filename = paste0(model, "_id_",i,".txt")
+    write.table(x[i],file=filename,quote=FALSE,row.names=FALSE,col.names=FALSE)
+  }
+}
+```
+## 1. Data Exploratory Analysis
+
+As described in Reference, 3 types of sensors (acceleration, gyroscope and magnetometer) are mounted in the users glove(fore arm), armband(arm), lumbar belt and dumbbell. The training data includes 36 basic features and 96 derived features (mean, variance, standard deviation, max, min, amplitude, kurtosis and skewness). 4 pairs of input variables and corresponding output variable are selected to plot as below.
+
+```{r, echo=FALSE}
+qplot(trn$accel_belt_x,trn$accel_belt_y, color = trn$classe, xlab="Accel Belt X", ylab="Accel Belt y" )
+```
+```{r, echo=FALSE}
+qplot(trn$accel_arm_x,trn$accel_arm_y, color = trn$classe, xlab="Accel Arm X", ylab="Accel Arm y" )
+```
+```{r, echo=FALSE}
+qplot(trn$gyros_dumbbell_x,trn$gyros_dumbbell_y, color = trn$classe, xlab="Gyros Dumbbell X", ylab="Gyros Dumbbell y" )
+```
+```{r, echo=FALSE}
+qplot(trn$magnet_forearm_x,trn$magnet_forearm_y, color = trn$classe, xlab="Magnet Forearm X", ylab="Magnet Forearm y" )
+```
+It is hardly to see linear relationship between input variables and output variable. So my model selection will focus on non-linear models.
+
+
+## 2. Feature selection
+
+Features, or input variables, are used to predict output variable. In this project, there are 36 basic sensor features, 96 derived features (mean, variance, standard deviation, max, min, amplitude, kurtosis and skewness) and some descriptive features. I choose 36 basic sensor features as candidate variables. If basic features can meet our expectation (equal or better than benchmark accuracy), then this approach will be more efficient than the approach described in Reference.
+
+36 basic features are devided into 3 groups by sensor types, i.e.,
+
+Group 1: c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "classe")
+
+Group 2: c("gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z",  "classe")
+
+Group 3: c("magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z", "classe")
+
+Then training data (75% of pml-training.csv file) with selected features are feeded to Random Forest model and fitted model is validated by rest 25% from training data file.
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+trn1 = trn[,c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "classe")]
+val1 = val[,c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "classe")]
+modRF <- train(classe ~ ., data = trn1, method="rf")
+predRF <- predict(modRF, val1)
+
+```
+Result of acceleration features
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+confusionMatrix(predRF, val1$classe)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+trn1 = trn[,c("gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z",  "classe")]
+val1 = val[,c("gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z", "classe")]
+modRF <- train(classe ~ ., data = trn1, method="rf")
+predRF <- predict(modRF, val1)
+```
+Result of gyroscope features
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+confusionMatrix(predRF, val1$classe)
+```
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+trn1 = trn[,c("magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z", "classe")]
+val1 = val[,c("magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z",  "classe")]
+modRF <- train(classe ~ ., data = trn1, method="rf")
+predRF <- predict(modRF, val1)
+
+```
+Result of magnetometer features
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+confusionMatrix(predRF, val1$classe)
+```
+We can see they are all below benchmark accuracy. It tell us that a single type of sensor could not provide enough information to classify target as accurate as we expected. Then what if we put sensor data together?
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+trn1 = trn[,c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z","magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z", "classe")]
+val1 = val[,c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z", "magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z",  "classe")]
+tst1  = tstData[,c("accel_belt_x","accel_belt_y","accel_belt_z","accel_arm_x","accel_arm_y", "accel_arm_z","accel_dumbbell_x","accel_dumbbell_y","accel_dumbbell_z", "accel_forearm_x","accel_forearm_y","accel_forearm_z", "gyros_belt_x","gyros_belt_y","gyros_belt_z","gyros_arm_x","gyros_arm_y", "gyros_arm_z","gyros_dumbbell_x","gyros_dumbbell_y","gyros_dumbbell_z", "gyros_forearm_x","gyros_forearm_y","gyros_forearm_z", "magnet_belt_x","magnet_belt_y","magnet_belt_z","magnet_arm_x","magnet_arm_y", "magnet_arm_z","magnet_dumbbell_x","magnet_dumbbell_y","magnet_dumbbell_z", "magnet_forearm_x","magnet_forearm_y","magnet_forearm_z")]
+modRF <- train(classe ~ ., data = trn1, method="rf")
+predRF <- predict(modRF, val1)
+pml_write_files(predict(modRF,tst1), "RF")
+```
+Result of all sensor features
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+confusionMatrix(predRF, val1$classe)
+```
+Its accuracy 98.8% is higher than benchmark 98.2%
+
+3 types of sensor features togather as predictors generates higher accuracy than any single type of sensor could do.
+
+## 3. Model Selection and Construction
+
+Section 1 "Data Exploratory Analysis" shows more likely non-linear relationship between feature variables and output variable; Section 2 "Feature selection" determines 36 basic sensor features could generate very good results. So my candidate models are Random Forest, Tree Bag and latent Dirichlet allocation (LDA). Random Forest has been fitted in section 2. Its output will be used directly in this section for comparison.
+
+Training and cross validation: original training data set "pml-training.csv" is split into 75% for training and rest 25% for validation.
+
+Tree Bag output:
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modBAG <- train(classe ~ ., data = trn1, method="treebag")
+predBAG <- predict(modBAG, val1)
+pml_write_files(predict(modBAG,tst1), "BAG")
+confusionMatrix(predBAG, val1$classe)
+```
+LDA output:
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+modLDA <- train(classe ~ ., data = trn1, method="lda")
+predLDA <- predict(modLDA, val1)
+pml_write_files(predict(modLDA,tst1), "LDA")
+confusionMatrix(predLDA, val1$classe)
+
+```
+## Summary
+
+This report describes the process of building a machine learning algorithm to predict activity quality from activity monitors. This algorithm uses 36 basic features of sesor data and Randon Forest method. Its accuracy is 98.8% with 95% confidence interval (98.4%, 99.1%). Comparing to the result provided in Reference, this algorithm is more efficient (doesn't use derived features)   and more accurate.
+
+## Discussion: 
+
+1. 10 fold cross validation can be considered if time allows
+
+2. Several models can be combined to "vote" on output for better result
+
+## Reference:
+
+Velloso, E.; Bulling, A.; Gellersen, H.; Ugulino, W.; Fuks, H. Qualitative Activity Recognition of Weight Lifting Exercises. Proceedings of 4th International Conference in Cooperation with SIGCHI (Augmented Human '13) . Stuttgart, Germany: ACM SIGCHI, 2013
